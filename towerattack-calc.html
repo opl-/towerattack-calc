@@ -189,20 +189,25 @@ $(document).ready(function() {
 
     function update() {
         var upgrades$ = $('#upgrades');
+        upgrades$.find('tr:not(.header)').remove();
+
         var newStats = {};
         $.extend(true, newStats, stats);
-
-        upgrades$.find('tr:not(.header)').remove();
+        var costSum = 0;
 
         for (var i = 0; i < 50; i++) {
             var best = getBestUpgrade(newStats);
+            var cost = getCost(newStats[best]);
+            costSum += cost;
             upgrades$.append(
                 $('<tr>').append(
                     '<td>' + newStats[best].name + '</td>'
                 ).append(
                     '<td>' + (newStats[best].lvl + 1) + '</td>'
                 ).append(
-                    '<td>' + getCost(newStats[best]) + '</td>'
+                    '<td>' + cost + '</td>'
+                ).append(
+                    '<td>' + costSum + '</td>'
                 )
             );
             newStats[best].lvl++;
@@ -216,7 +221,7 @@ $(document).ready(function() {
 <body>
 <table id="stats"></table>
 <table id="upgrades">
-<tr class="header"><th>Name</th><th>Lvl</th><th>Cost</th></tr>
+<tr class="header"><th>Name</th><th>Lvl</th><th>Cost</th><th>Cost Sum</th></tr>
 </table>
 </body>
 </html>
