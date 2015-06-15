@@ -153,7 +153,7 @@ $(document).ready(function() {
     }
 
     function getCost(stat) {
-        return Math.floor(getExpo(stat.cost, stat.lvl, stat.exponential) / 10) * 10;
+        return Math.floor(getExpo(stat.cost, stat.name === upgrades.ele().name ? stat.lvl + 1 : stat.lvl, stat.exponential) / 10) * 10;
     }
 
     function getDamage(stats) {
