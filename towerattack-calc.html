@@ -40,10 +40,19 @@ p {
     padding-left: 5px;
 }
 
+#buttons {
+    text-align: center;
+}
+
 #update {
-    display: block;
+    display: inline-block;
     width: 200px;
-    margin: 10px auto 25px auto;
+}
+
+#bought {
+    display: inline-block;
+    width: 200px;
+    margin: 10px 0px 20px;
 }
 
 #upgrades {
@@ -287,7 +296,7 @@ $(document).ready(function() {
                 '<td>' + upgrade.name + '</td>'
             ).append(
                 $('<td>').append(
-                    $('<input type="number" min="0">').val(upgrade.lvl).data('stat', k).attr('step', upgrade.step || 1).attr('max', upgrade.max || null)
+                    $('<input id="i-' + k + '" class="input" type="number" min="0">').val(upgrade.lvl).data('stat', k).attr('step', upgrade.step || 1).attr('max', upgrade.max || null)
                 ).append(
                     $('<button class="increment">').text('+').data('stat', k)
                 )
@@ -295,8 +304,8 @@ $(document).ready(function() {
         );
     }
 
-    stats$.off('change', 'input[type=number]');
-    stats$.on('change', 'input[type=number]', function() {
+    stats$.off('change', '.input');
+    stats$.on('change', '.input', function() {
         e = $(this);
         stats[e.data('stat')].lvl = parseFloat(e.val());
         if (stats[e.data('stat')].max) stats[e.data('stat')].lvl = Math.min(stats[e.data('stat')].max, stats[e.data('stat')].lvl);
@@ -316,6 +325,14 @@ $(document).ready(function() {
     update();
 
     $('#update').click(update);
+
+    $('#bought').click(function(e) {
+        var statName = getBestUpgrade(stats);
+        var stat = stats[statName];
+        stat.lvl++;
+        $('#i-' + statName).val(stat.lvl);
+        update();
+    });
 });
 </script>
 </head>
@@ -323,7 +340,10 @@ $(document).ready(function() {
 <h2>Steam Upgrade Calculator</h2>
 <p>Best damage to cost ratio<br/>Made by opl (<a href="https://twitter.com/oplopl0">Twitter</a>, <a href="https://reddit.com/u/opl_">Reddit</a>, <a href="https://steamcommunity.com/id/opl_">Steam</a>)</p>
 <table id="stats"></table>
+<div id="buttons">
 <button id="update">Update</button>
+<button id="bought">Bought next</button>
+</div>
 <table id="upgrades">
 <tr class="header"><th>Name</th><th>Lvl</th><th>Cost</th><th>Cost Sum</th></tr>
 </table>
