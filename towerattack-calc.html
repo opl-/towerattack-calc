@@ -172,7 +172,7 @@ $(document).ready(function() {
 
             var newStats = {};
             $.extend(true, newStats, stats);
-            newStat.lvl++;
+            newStats[stat].lvl++;
 
             var cost = getCost(newStat);
             var newDmg = getDamage(newStats);
