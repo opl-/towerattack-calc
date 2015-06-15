@@ -4,6 +4,77 @@
 <title>Calc</title>
 <meta charset="utf-8" />
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+<style>
+html {
+    background-color: #dde;
+    font-family: Arial;
+}
+
+body {
+    max-width: 600px;
+    margin: 0px auto;
+    padding-bottom: 100px;
+}
+
+h2 {
+    text-align: center;
+}
+
+p {
+    text-align: center;
+    font-size: .9em;
+}
+
+#stats {
+    width: 100%;
+}
+
+#stats tr td:nth-child(1) {
+    width: 50%;
+    padding-right: 5px;
+    text-align: right;
+}
+
+#stats tr td:nth-child(2) {
+    width: 50%;
+    padding-left: 5px;
+}
+
+#update {
+    display: block;
+    width: 200px;
+    margin: 10px auto 25px auto;
+}
+
+#upgrades {
+    width: 100%;
+    border-spacing: 0px;
+}
+
+#upgrades th {
+    text-align: left;
+}
+
+#upgrades tr:nth-child(2n) {
+    background-color: #cfcfef;
+}
+
+#upgrades tr:hover {
+    background-color: #ccccdc;
+}
+
+#upgrades td:nth-child(2) {
+    width: 10%;
+}
+
+#upgrades td:nth-child(3) {
+    width: 20%;
+}
+
+#upgrades td:nth-child(4) {
+    width: 20%;
+}
+</style>
 <script>
 var stats = {};
 
@@ -237,6 +308,8 @@ $(document).ready(function() {
 </script>
 </head>
 <body>
+<h2>Steam Upgrade Calculator</h2>
+<p>Best damage to cost ratio<br/>Made by opl (<a href="https://twitter.com/oplopl0">Twitter</a>, <a href="https://reddit.com/u/opl_">Reddit</a>, <a href="https://steamcommunity.com/id/opl_">Steam</a>)</p>
 <table id="stats"></table>
 <button id="update">Update</button>
 <table id="upgrades">
