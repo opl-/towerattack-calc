@@ -116,105 +116,101 @@ var upgrades = {
     }
 };
 
-$(document).ready(function() {
-    function init() {
-        var stats$ = $('#stats');
+function getExpo(cost, lvl, expo) {
+    return cost * Math.pow(expo, lvl);
+}
 
-        stats = {};
+function getCost(stat) {
+    return Math.floor(getExpo(stat.cost, stat.name === upgrades.ele().name ? stat.lvl + 1 : stat.lvl, stat.exponential) / 10) * 10;
+}
 
-        for (var k in upgrades) {
-            var upgrade = upgrades[k]();
+function getDamage(stats) {
+    var base = 10 + stats.b1.lvl * 10 + stats.b2.lvl * 100 + stats.b3.lvl * 1000 + stats.b4.lvl * 10000;
+    return base * (1 + (stats.ele.lvl * 1.5) / 4) * stats.cps.lvl + base * (2 + stats.luck.lvl * 1.5) * stats.critchance.lvl + (10 + stats.a1.lvl * 10 + stats.a2.lvl * 100 + stats.a3.lvl * 1000 + stats.a4.lvl * 10000);
+}
 
-            stats[k] = upgrade;
+function getBestUpgrade(stats) {
+    var currentDmg = getDamage(stats);
 
-            stats$.append(
-                $('<tr>').append(
-                    '<td>' + upgrade.name + '</td>'
-                ).append(
-                    $('<td>').append(
-                        $('<input type="number" min="0">').val(upgrade.lvl).data('stat', k).attr('step', upgrade.step || 1).attr('max', upgrade.max || null)
-                    )
-                )
-            );
-        }
+    var bestValue = 0;
+    var bestStat = 'ERR';
 
-        stats$.off('change', 'input[type=number]');
-        stats$.on('change', 'input[type=number]', function() {
-            e = $(this);
-            stats[e.data('stat')].lvl = parseFloat(e.val());
-            update();
-        });
-
-        update();
-    }
-
-    function getExpo(cost, lvl, expo) {
-        return cost * Math.pow(expo, lvl);
-    }
-
-    function getCost(stat) {
-        return Math.floor(getExpo(stat.cost, stat.name === upgrades.ele().name ? stat.lvl + 1 : stat.lvl, stat.exponential) / 10) * 10;
-    }
-
-    function getDamage(stats) {
-        var base = 10 + stats.b1.lvl * 10 + stats.b2.lvl * 100 + stats.b3.lvl * 1000 + stats.b4.lvl * 10000;
-        return base * (1 + (stats.ele.lvl * 1.5) / 4) * stats.cps.lvl + base * (2 + stats.luck.lvl * 1.5) * stats.critchance.lvl + (10 + stats.a1.lvl * 10 + stats.a2.lvl * 100 + stats.a3.lvl * 1000 + stats.a4.lvl * 10000);
-    }
-
-    function getBestUpgrade(stats) {
-        var currentDmg = getDamage(stats);
-
-        var bestValue = 0;
-        var bestStat = 'ERR';
-
-        for (var stat in stats) {
-            if (!stats[stat].canUpgrade(stats)) continue;
-
-            var newStats = {};
-            $.extend(true, newStats, stats);
-            newStats[stat].lvl++;
-
-            var cost = getCost(newStats[stat]);
-            var newDmg = getDamage(newStats);
-            var value = (newDmg - currentDmg) / cost;
-
-            if (value > bestValue) {
-                bestValue = value;
-                bestStat = stat;
-            }
-        }
-
-        return bestStat;
-    }
-
-    function update() {
-        var upgrades$ = $('#upgrades');
-        upgrades$.find('tr:not(.header)').remove();
+    for (var stat in stats) {
+        if (!stats[stat].canUpgrade(stats)) continue;
 
         var newStats = {};
         $.extend(true, newStats, stats);
-        var costSum = 0;
+        newStats[stat].lvl++;
 
-        for (var i = 0; i < 50; i++) {
-            var best = getBestUpgrade(newStats);
-            var cost = getCost(newStats[best]);
-            costSum += cost;
-            upgrades$.append(
-                $('<tr>').append(
-                    '<td>' + newStats[best].name + '</td>'
-                ).append(
-                    '<td>' + (newStats[best].lvl + 1) + '</td>'
-                ).append(
-                    '<td>' + cost + '</td>'
-                ).append(
-                    '<td>' + costSum + '</td>'
-                )
-            );
-            newStats[best].lvl++;
+        var cost = getCost(newStats[stat]);
+        var newDmg = getDamage(newStats);
+        var value = (newDmg - currentDmg) / cost;
+
+        if (value > bestValue) {
+            bestValue = value;
+            bestStat = stat;
         }
     }
 
-    init();
+    return bestStat;
+}
+
+function update() {
+    var upgrades$ = $('#upgrades');
+    upgrades$.find('tr:not(.header)').remove();
+
+    var newStats = {};
+    $.extend(true, newStats, stats);
+    var costSum = 0;
+
+    for (var i = 0; i < 50; i++) {
+        var best = getBestUpgrade(newStats);
+        var cost = getCost(newStats[best]);
+        costSum += cost;
+        upgrades$.append(
+            $('<tr>').append(
+                '<td>' + newStats[best].name + '</td>'
+            ).append(
+                '<td>' + (newStats[best].lvl + 1) + '</td>'
+            ).append(
+                '<td>' + cost + '</td>'
+            ).append(
+                '<td>' + costSum + '</td>'
+            )
+        );
+        newStats[best].lvl++;
+    }
+}
+
+$(document).ready(function() {
+    var stats$ = $('#stats');
+
+    stats = {};
+
+    for (var k in upgrades) {
+        var upgrade = upgrades[k]();
+
+        stats[k] = upgrade;
+
+        stats$.append(
+            $('<tr>').append(
+                '<td>' + upgrade.name + '</td>'
+            ).append(
+                $('<td>').append(
+                    $('<input type="number" min="0">').val(upgrade.lvl).data('stat', k).attr('step', upgrade.step || 1).attr('max', upgrade.max || null)
+                )
+            )
+        );
+    }
+
+    stats$.off('change', 'input[type=number]');
+    stats$.on('change', 'input[type=number]', function() {
+        e = $(this);
+        stats[e.data('stat')].lvl = parseFloat(e.val());
+        update();
+    });
+
+    update();
 });
 </script>
 </head>
