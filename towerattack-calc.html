@@ -27,7 +27,7 @@ var upgrades = {
     a1: function() {
         return {
             canUpgrade: function() {return true;},
-            name: 'Auto DMG 1',
+            name: 'Auto Damage 1',
             lvl: 0,
             cost: 150,
             exponential: 1.3
@@ -36,7 +36,7 @@ var upgrades = {
     a2: function() {
         return {
             canUpgrade: function(stats) {return stats.a1.lvl >= 10;},
-            name: 'Auto DMG 2',
+            name: 'Auto Damage 2',
             lvl: 0,
             cost: 10000,
             exponential: 2.2
@@ -45,7 +45,7 @@ var upgrades = {
     a3: function() {
         return {
             canUpgrade: function(stats) {return stats.a2.lvl >= 10;},
-            name: 'Auto DMG 3',
+            name: 'Auto Damage 3',
             lvl: 0,
             cost: 100000,
             exponential: 2.2
@@ -54,7 +54,7 @@ var upgrades = {
     a4: function() {
         return {
             canUpgrade: function(stats) {return stats.b3.lvl >= 10;},
-            name: 'Auto DMG 4',
+            name: 'Auto Damage 4',
             lvl: 0,
             cost: 1000000,
             exponential: 2.2
@@ -63,7 +63,7 @@ var upgrades = {
     b1: function() {
         return {
             canUpgrade: function() {return true;},
-            name: 'Base DMG 1',
+            name: 'Base Damage 1',
             lvl: 0,
             cost: 200,
             exponential: 1.2
@@ -72,7 +72,7 @@ var upgrades = {
     b2: function() {
         return {
             canUpgrade: function(stats) {return stats.b1.lvl >= 10;},
-            name: 'Base DMG 2',
+            name: 'Base Damage 2',
             lvl: 0,
             cost: 10000,
             exponential: 2.2
@@ -81,7 +81,7 @@ var upgrades = {
     b3: function() {
         return {
             canUpgrade: function(stats) {return stats.b2.lvl >= 10;},
-            name: 'Base DMG 3',
+            name: 'Base Damage 3',
             lvl: 0,
             cost: 100000,
             exponential: 2.2
@@ -90,7 +90,7 @@ var upgrades = {
     b4: function() {
         return {
             canUpgrade: function(stats) {return stats.b3.lvl >= 10;},
-            name: 'Base DMG 4',
+            name: 'Base Damage 4',
             lvl: 0,
             cost: 1000000,
             exponential: 2.2
