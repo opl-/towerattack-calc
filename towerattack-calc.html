@@ -6,7 +6,8 @@
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
 <style>
 html {
-    background-color: #dde;
+    background-color: #333;
+    color: #ddd;
     font-family: Arial;
 }
 
@@ -23,6 +24,11 @@ h2 {
 p {
     text-align: center;
     font-size: .9em;
+}
+
+a {
+    color: #4d77ee;
+    text-decoration: none;
 }
 
 #stats {
@@ -60,16 +66,20 @@ p {
     border-spacing: 0px;
 }
 
+#upgrades tr:nth-child(2n) {
+    background-color: #3f3f3f;
+}
+
+#upgrades tr:not(:first-child):hover {
+    background-color: #282828;
+}
+
 #upgrades th {
     text-align: left;
 }
 
-#upgrades tr:nth-child(2n) {
-    background-color: #cfcfef;
-}
-
-#upgrades tr:hover {
-    background-color: #ccccdc;
+#upgrades td {
+    padding: 1px;
 }
 
 #upgrades td:nth-child(2) {
