@@ -121,7 +121,8 @@ function getExpo(cost, lvl, expo) {
 }
 
 function getCost(stat) {
-    return Math.floor(getExpo(stat.cost, stat.name === upgrades.ele().name ? stat.lvl + 1 : stat.lvl, stat.exponential) / 10) * 10;
+    var elemental = stat.name === upgrades.ele().name;
+    return elemental && stat.lvl === 0 ? 0 : Math.floor(getExpo(stat.cost, elemental ? stat.lvl + 1 : stat.lvl, stat.exponential) / 10) * 10;
 }
 
 function getDamage(stats) {
