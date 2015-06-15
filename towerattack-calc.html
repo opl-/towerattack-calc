@@ -1,0 +1,233 @@
+<!doctype HTML>
+<html>
+<head>
+<title>Calc</title>
+<meta charset="utf-8" />
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script>
+var stats = {};
+
+var upgrades = {
+    cps: function() {
+        return {
+            canUpgrade: function() {return false;},
+            name: 'CPS',
+            lvl: 20
+        }
+    },
+    critchance: function() {
+        return {
+            canUpgrade: function() {return false;},
+            name: 'Crit Chance',
+            lvl: 0.1,
+            step: 0.01,
+            max: 1
+        }
+    },
+    b1: function() {
+        return {
+            canUpgrade: function() {return true;},
+            name: 'Base DMG 1',
+            lvl: 0,
+            cost: 200,
+            exponential: 1.2
+        }
+    },
+    b2: function() {
+        return {
+            canUpgrade: function(stats) {return stats.b1.lvl >= 10;},
+            name: 'Base DMG 2',
+            lvl: 0,
+            cost: 10000,
+            exponential: 2.2
+        }
+    },
+    b3: function() {
+        return {
+            canUpgrade: function(stats) {return stats.b2.lvl >= 10;},
+            name: 'Base DMG 3',
+            lvl: 0,
+            cost: 100000,
+            exponential: 2.2
+        }
+    },
+    b4: function() {
+        return {
+            canUpgrade: function(stats) {return stats.b3.lvl >= 10;},
+            name: 'Base DMG 4',
+            lvl: 0,
+            cost: 1000000,
+            exponential: 2.2
+        }
+    },
+    a1: function() {
+        return {
+            canUpgrade: function() {return true;},
+            name: 'Auto DMG 1',
+            lvl: 0,
+            cost: 150,
+            exponential: 1.3
+        }
+    },
+    a2: function() {
+        return {
+            canUpgrade: function(stats) {return stats.a1.lvl >= 10;},
+            name: 'Auto DMG 2',
+            lvl: 0,
+            cost: 10000,
+            exponential: 2.2
+        }
+    },
+    a3: function() {
+        return {
+            canUpgrade: function(stats) {return stats.a2.lvl >= 10;},
+            name: 'Auto DMG 3',
+            lvl: 0,
+            cost: 100000,
+            exponential: 2.2
+        }
+    },
+    a4: function() {
+        return {
+            canUpgrade: function(stats) {return stats.b3.lvl >= 10;},
+            name: 'Auto DMG 4',
+            lvl: 0,
+            cost: 1000000,
+            exponential: 2.2
+        }
+    },
+    luck: function() {
+        return {
+            canUpgrade: function(stats) {return stats.b1.lvl >= 5;},
+            name: 'Lucky Shot',
+            lvl: 0,
+            cost: 50,
+            exponential: 2.5
+        }
+    },
+    ele: function() {
+        return {
+            canUpgrade: function() {return true;},
+            name: 'Elemental',
+            lvl: 0,
+            cost: 50,
+            exponential: 2.2
+        }
+    }
+};
+
+// base = 10 + b1 * 10 + b2 * 100 + b3 * 1000 + b4 * 10000
+// dps = base * (1 + ele * 1.5) / 4 + base * (2 + luck * 1.5) * critchance
+// !doesnt include elemental ability!
+
+$(document).ready(function() {
+    function init() {
+        var stats$ = $('#stats');
+
+        stats = {};
+
+        for (var k in upgrades) {
+            var upgrade = upgrades[k]();
+
+            stats[k] = upgrade;
+
+            stats$.append(
+                $('<tr>').append(
+                    '<td>' + upgrade.name + '</td>'
+                ).append(
+                    $('<td>').append(
+                        $('<input type="number" min="0">').val(upgrade.lvl).data('stat', k).attr('step', upgrade.step || 1).attr('max', upgrade.max || null)
+                    )
+                )
+            );
+        }
+
+        stats$.off('change', 'input[type=number]');
+        stats$.on('change', 'input[type=number]', function() {
+            e = $(this);
+            stats[e.data('stat')].lvl = parseFloat(e.val());
+            update();
+        });
+
+        update();
+    }
+
+function log(a) {$('#upgrades').append(a + '<br>')}
+
+    function getExpo(cost, lvl, expo) {
+        return cost * Math.pow(expo, lvl);
+    }
+
+    function getCost(stat) {
+        return Math.floor(getExpo(stat.cost, stat.lvl, stat.exponential) / 10) * 10;
+    }
+
+    function getDamage(stats) {
+        var base = 10 + stats.b1.lvl * 10 + stats.b2.lvl * 100 + stats.b3.lvl * 1000 + stats.b4.lvl * 10000;
+        return base * (1 + (stats.ele.lvl * 1.5) / 4) * stats.cps.lvl + base * (2 + stats.luck.lvl * 1.5) * stats.critchance.lvl + (10 + stats.a1.lvl * 10 + stats.a2.lvl * 100 + stats.a3.lvl * 1000 + stats.a4.lvl * 10000);
+    }
+
+    function clone(obj) {
+        var newObj = {};
+        for (var k in obj) newObj[k] = obj[k];
+        return newObj;
+    }
+
+    function getBestUpgrade(stats) {
+        var currentDmg = getDamage(stats);
+
+        var bestDmg = 0;
+        var bestStat = 'ERR';
+
+        for (var stat in stats) {
+            if (!stats[stat].canUpgrade(stats)) continue;
+            var newStats = clone(stats);
+            var newStat = clone(stats[stat]);
+            newStats[stat] = newStat;
+            newStat.lvl++;
+            var cost = getCost(newStat);
+            var newDmg = getDamage(newStats);
+            var a = (newDmg - currentDmg) / cost;
+            if (a > bestDmg) {
+                bestDmg = a;
+                bestStat = stat;
+            }
+        }
+
+        return bestStat;
+    }
+
+    function update() {
+        var upgrades$ = $('#upgrades');
+        var newStats = {};
+        $.extend(true, newStats, stats);
+        console.log(newStats);
+
+        upgrades$.find('tr:not(.header)').remove();
+
+        for (var i = 0; i < 10; i++) {
+            var best = getBestUpgrade(newStats);
+            upgrades$.append(
+                $('<tr>').append(
+                    '<td>' + newStats[best].name + '</td>'
+                ).append(
+                    '<td>' + newStats[best].lvl + '</td>'
+                ).append(
+                    '<td>' + getCost(newStats[best]) + '</td>'
+                )
+            );
+            newStats[best].lvl++;
+        }
+    }
+
+    init();
+});
+</script>
+</head>
+<body>
+<table id="stats"></table>
+<table id="upgrades">
+<tr class="header"><th>Name</th><th>Lvl</th><th>Cost</th></tr>
+</table>
+</body>
+</html>
