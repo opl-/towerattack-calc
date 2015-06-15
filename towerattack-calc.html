@@ -231,11 +231,14 @@ $(document).ready(function() {
     });
 
     update();
+
+    $('#update').click(update);
 });
 </script>
 </head>
 <body>
 <table id="stats"></table>
+<button id="update">Update</button>
 <table id="upgrades">
 <tr class="header"><th>Name</th><th>Lvl</th><th>Cost</th><th>Cost Sum</th></tr>
 </table>
