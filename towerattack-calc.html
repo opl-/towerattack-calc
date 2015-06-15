@@ -207,6 +207,7 @@ $(document).ready(function() {
     stats$.on('change', 'input[type=number]', function() {
         e = $(this);
         stats[e.data('stat')].lvl = parseFloat(e.val());
+        if (stats[e.data('stat')].max) stats[e.data('stat')].lvl = Math.min(stats[e.data('stat')].max, stats[e.data('stat')].lvl);
         update();
     });
 
