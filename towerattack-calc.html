@@ -82,8 +82,12 @@ a {
     padding: 1px;
 }
 
-#upgrades td:nth-child(2), #upgrades td:nth-child(3), #upgrades td:nth-child(4) {
+#upgrades td:nth-child(2) {
     width: 10%;
+}
+
+#upgrades td:nth-child(3), #upgrades td:nth-child(4), #upgrades td:nth-child(5) {
+    width: 15%;
 }
 </style>
 <script>
@@ -268,18 +272,20 @@ function update() {
         var best = getBestUpgrade(newStats);
         var cost = getCost(newStats[best]);
         costSum += cost;
+        newStats[best].lvl++;
         upgrades$.append(
             $('<tr>').append(
                 '<td>' + newStats[best].name + '</td>'
             ).append(
-                '<td>' + (newStats[best].lvl + 1) + '</td>'
+                '<td>' + newStats[best].lvl + '</td>'
             ).append(
                 '<td>' + cost + '</td>'
             ).append(
                 '<td>' + costSum + '</td>'
+            ).append(
+                '<td>' + getDamage(newStats) + '</td>'
             )
         );
-        newStats[best].lvl++;
     }
 }
 
@@ -335,7 +341,7 @@ $(document).ready(function() {
 <button id="bought">Bought next</button>
 </div>
 <table id="upgrades">
-<tr class="header"><th>Name</th><th>Lvl</th><th>Cost</th><th>Cost Sum</th></tr>
+<tr class="header"><th>Name</th><th>Lvl</th><th>Cost</th><th>Cost Sum</th><th><abbr title="Estimated Damage Per Second">EDPS</abbr></th></tr>
 </table>
 </body>
 </html>
