@@ -155,6 +155,15 @@ var upgrades = {
             exponential: 2.2
         }
     },
+    a6: function() {
+        return {
+            canUpgrade: function(stats) {return stats.a5.lvl >= 10;},
+            name: 'Auto Damage 6',
+            lvl: 0,
+            cost: 100000000,
+            exponential: 2.2
+        }
+    },
     b1: function() {
         return {
             canUpgrade: function() {return true;},
@@ -200,6 +209,15 @@ var upgrades = {
             exponential: 2.2
         }
     },
+    b6: function() {
+        return {
+            canUpgrade: function(stats) {return stats.b5.lvl >= 10;},
+            name: 'Base Damage 6',
+            lvl: 0,
+            cost: 100000000,
+            exponential: 2.2
+        }
+    },
     luck: function() {
         return {
             canUpgrade: function(stats) {return stats.b1.lvl >= 5;},
@@ -232,6 +250,19 @@ function getCost(stat) {
 function getDamage(stats) {
     var base = 10 + stats.b1.lvl * 10 + stats.b2.lvl * 100 + stats.b3.lvl * 1000 + stats.b4.lvl * 10000 + stats.b5.lvl * 100000;
     return base * (1 + (stats.ele.lvl * 1.5) / 4) * stats.cps.lvl + base * (2 + stats.luck.lvl * 1.5) * stats.cps.lvl * stats.critchance.lvl + (10 + stats.a1.lvl * 10 + stats.a2.lvl * 100 + stats.a3.lvl * 1000 + stats.a4.lvl * 10000 + stats.a5.lvl * 100000) * (1 + stats.ele.lvl / 4);
+}
+
+function formatNumber(number) {
+    var units = ['', 'K', 'M', 'B', 'T', 'q', 'Q', 's', 'S', 'O', 'N', 'd', 'U', 'D', '!', '@', '#', '$', '%', '^', '&', '*', '?!'];
+    var unit = 0;
+
+    while (true) {
+        if (number < 1000 || unit - 1 >= units.length) break;
+        number /= 1000;
+        unit++;
+    }
+
+    return Math.floor(number * 1000) / 1000 + units[unit];
 }
 
 function getBestUpgrade(stats) {
@@ -279,11 +310,11 @@ function update() {
             ).append(
                 '<td>' + newStats[best].lvl + '</td>'
             ).append(
-                '<td>' + cost + '</td>'
+                '<td>' + formatNumber(cost) + '</td>'
             ).append(
-                '<td>' + costSum + '</td>'
+                '<td>' + formatNumber(costSum) + '</td>'
             ).append(
-                '<td>' + getDamage(newStats) + '</td>'
+                '<td>' + formatNumber(getDamage(newStats)) + '</td>'
             )
         );
     }
