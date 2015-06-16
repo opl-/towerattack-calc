@@ -235,7 +235,7 @@ function getCost(stat) {
 
 function getDamage(stats) {
     var base = 10 + stats.b1.lvl * 10 + stats.b2.lvl * 100 + stats.b3.lvl * 1000 + stats.b4.lvl * 10000 + stats.b5.lvl * 100000;
-    return base * (1 + (stats.ele.lvl * 1.5) / 4) * stats.cps.lvl + base * (2 + stats.luck.lvl * 1.5) * stats.critchance.lvl + (10 + stats.a1.lvl * 10 + stats.a2.lvl * 100 + stats.a3.lvl * 1000 + stats.a4.lvl * 10000 + stats.a5.lvl * 100000) * stats.ele.lvl / 4;
+    return base * (1 + (stats.ele.lvl * 1.5) / 4) * stats.cps.lvl + base * (2 + stats.luck.lvl * 1.5) * stats.cps.lvl * stats.critchance.lvl + (10 + stats.a1.lvl * 10 + stats.a2.lvl * 100 + stats.a3.lvl * 1000 + stats.a4.lvl * 10000 + stats.a5.lvl * 100000) * (1 + stats.ele.lvl / 4);
 }
 
 function getBestUpgrade(stats) {
