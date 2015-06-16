@@ -164,6 +164,15 @@ var upgrades = {
             exponential: 2.2
         }
     },
+    a7: function() {
+        return {
+            canUpgrade: function(stats) {return stats.a6.lvl >= 10;},
+            name: 'Auto Damage 7',
+            lvl: 0,
+            cost: 1000000000,
+            exponential: 2.2
+        }
+    },
     b1: function() {
         return {
             canUpgrade: function() {return true;},
@@ -215,6 +224,15 @@ var upgrades = {
             name: 'Base Damage 6',
             lvl: 0,
             cost: 100000000,
+            exponential: 2.2
+        }
+    },
+    b7: function() {
+        return {
+            canUpgrade: function(stats) {return stats.b6.lvl >= 10;},
+            name: 'Base Damage 7',
+            lvl: 0,
+            cost: 1000000000,
             exponential: 2.2
         }
     },
