@@ -173,6 +173,33 @@ var upgrades = {
             exponential: 2.2
         }
     },
+    a8: function() {
+        return {
+            canUpgrade: function(stats) {return stats.a7.lvl >= 10;},
+            name: 'Auto Damage 8',
+            lvl: 0,
+            cost: 10000000000,
+            exponential: 2.2
+        }
+    },
+    a9: function() {
+        return {
+            canUpgrade: function(stats) {return stats.a8.lvl >= 10;},
+            name: 'Auto Damage 9',
+            lvl: 0,
+            cost: 100000000000,
+            exponential: 2.2
+        }
+    },
+    a10: function() {
+        return {
+            canUpgrade: function(stats) {return stats.a9.lvl >= 10;},
+            name: 'Auto Damage 10',
+            lvl: 0,
+            cost: 1000000000000,
+            exponential: 2.2
+        }
+    },
     b1: function() {
         return {
             canUpgrade: function() {return true;},
@@ -236,6 +263,33 @@ var upgrades = {
             exponential: 2.2
         }
     },
+    b8: function() {
+        return {
+            canUpgrade: function(stats) {return stats.b7.lvl >= 10;},
+            name: 'Base Damage 8',
+            lvl: 0,
+            cost: 10000000000,
+            exponential: 2.2
+        }
+    },
+    b9: function() {
+        return {
+            canUpgrade: function(stats) {return stats.b8.lvl >= 10;},
+            name: 'Base Damage 9',
+            lvl: 0,
+            cost: 100000000000,
+            exponential: 2.2
+        }
+    },
+    b10: function() {
+        return {
+            canUpgrade: function(stats) {return stats.b9.lvl >= 10;},
+            name: 'Base Damage 10',
+            lvl: 0,
+            cost: 1000000000000,
+            exponential: 2.2
+        }
+    },
     luck: function() {
         return {
             canUpgrade: function(stats) {return stats.b1.lvl >= 5;},
@@ -266,8 +320,8 @@ function getCost(stat) {
 }
 
 function getDamage(stats) {
-    var base = 10 + stats.b1.lvl * 10 + stats.b2.lvl * 100 + stats.b3.lvl * 1000 + stats.b4.lvl * 10000 + stats.b5.lvl * 100000 + stats.b6.lvl * 1000000 + stats.b7.lvl * 10000000;
-    return base * (1 + (stats.ele.lvl * 1.5) / 4) * stats.cps.lvl + base * (2 + stats.luck.lvl * 1.5) * stats.cps.lvl * stats.critchance.lvl + (10 + stats.a1.lvl * 10 + stats.a2.lvl * 100 + stats.a3.lvl * 1000 + stats.a4.lvl * 10000 + stats.a5.lvl * 100000 + stats.a6.lvl * 1000000 + stats.a7.lvl * 10000000) * (1 + stats.ele.lvl / 4);
+    var base = 10 + stats.b1.lvl * 10 + stats.b2.lvl * 100 + stats.b3.lvl * 1000 + stats.b4.lvl * 10000 + stats.b5.lvl * 100000 + stats.b6.lvl * 1000000 + stats.b7.lvl * 10000000 + stats.b8.lvl * 100000000 + stats.b9.lvl * 1000000000 + stats.b10.lvl * 10000000000;
+    return base * (1 + (stats.ele.lvl * 1.5) / 4) * stats.cps.lvl + base * (2 + stats.luck.lvl * 1.5) * stats.cps.lvl * stats.critchance.lvl + (10 + stats.a1.lvl * 10 + stats.a2.lvl * 100 + stats.a3.lvl * 1000 + stats.a4.lvl * 10000 + stats.a5.lvl * 100000 + stats.a6.lvl * 1000000 + stats.a7.lvl * 10000000 + stats.a8.lvl * 100000000 + stats.a9.lvl * 1000000000 + stats.a10.lvl * 10000000000) * (1 + stats.ele.lvl / 4);
 }
 
 function formatNumber(number) {
