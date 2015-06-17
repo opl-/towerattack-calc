@@ -63,23 +63,26 @@
       }
 
       function createUpdateChart(stat) {
-        return function(graph, data) {
-          var time = new Date().getTime();
+        return function(graph, time, data) {
+          var a = {};
 
-          for (var roomID in data) {
-            if (graph.rooms.indexOf(roomID) === -1) {
-              graph.graph.addSeries({
-                name: roomNames[roomID] ? roomID + ' (' + roomNames[roomID] + ')' : roomID
-              });
-              graph.rooms.push(roomID);
-            }
+          for (var r in data) a[r] = data[r][stat];
 
-            for (var s in this.rooms) if (this.rooms[s] === roomID) {
-              graph.graph.series[s].addPoint([time, data[roomID][stat]], true);
+          addPoints(graph, time, a);
+        }
+      }
 
-              break;
-            }
+      function addPoints(graph, time, data) {
+        console.log('adding points to ' + graph.name + ': ', data);
+        for (var roomID in data) {
+          if (graph.rooms.indexOf(roomID) === -1) {
+            graph.graph.addSeries({
+              name: roomNames[roomID] ? roomID + ' (' + roomNames[roomID] + ')' : roomID
+            });
+            graph.rooms.push(roomID);
           }
+
+          graph.graph.series[graph.rooms.indexOf(roomID)].addPoint([time, data[roomID]], true);
         }
       }
 
@@ -98,10 +101,22 @@
           name: 'Level Change',
           init: function(graphContainer) {
             this.rooms = [];
+            this.lastData = {};
 
             graphContainer.highcharts('StockChart', generateChartOptions(this));
           },
-          update: createUpdateChart('levels_diff')
+          update: function(graph, time, data) {
+            var a = {};
+            var newLevels = {};
+
+            for (var n in data) {
+              a[n] = graph.lastData && graph.lastData[n] ? data[n].level - graph.lastData[n] : 0;
+              newLevels[n] = data[n].level;
+            }
+
+            graph.lastData = newLevels;
+            addPoints(graph, time, a);
+          }
         },
         wormholes: {
           name: 'Wormholes',
@@ -129,7 +144,9 @@
 
         function getData() {
           $.get('http://cors-anywhere.herokuapp.com/http://steamga.me/data/api/leaderboard.json').done(function(data) {
-            for (var n in graphs) graphs[n].update(graphs[n], data);
+            var time = new Date().getTime();
+
+            for (var n in graphs) graphs[n].update(graphs[n], time, data);
           }).fail(function(a, b, c) {
             console.log(a, b, c);
           });
