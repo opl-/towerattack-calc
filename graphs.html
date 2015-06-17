@@ -58,6 +58,21 @@
           },
           title: {
             text: graph.name
+          },
+          tooltip: {
+            formatter: function() {
+              var sortedPoints = this.points.sort(function(a, b) {
+                return a.y > b.y ? -1 : (a.y < b.y ? 1 : 0);
+              });
+
+              var tooltip = '<span style="font-size: 10px;">' + new Date(this.points[0].x).toUTCString() + '</span>';
+
+              $.each(sortedPoints, function(i, point) {
+                tooltip += '<br/><span style="color:' + point.series.color + '">\u25CF</span> ' + point.series.name + ': <b>' + point.y + '</b>';
+              });
+
+              return tooltip;
+            }
           }
         }
       }
@@ -131,7 +146,7 @@
       $(document).ready(function() {
         Highcharts.setOptions({
           global: {
-            useUTC: false
+            useUTC: true
           }
         });
 
