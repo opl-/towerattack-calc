@@ -73,11 +73,10 @@
       }
 
       function addPoints(graph, time, data) {
-        console.log('adding points to ' + graph.name + ': ', data);
         for (var roomID in data) {
           if (graph.rooms.indexOf(roomID) === -1) {
             graph.graph.addSeries({
-              name: roomNames[roomID] ? roomID + ' (' + roomNames[roomID] + ')' : roomID
+              name: roomID + (roomNames[roomID] ? ' (' + roomNames[roomID] + ')' : '')
             });
             graph.rooms.push(roomID);
           }
@@ -146,32 +145,25 @@
           $.get('http://cors-anywhere.herokuapp.com/http://steamga.me/data/api/leaderboard.json').done(function(data) {
             var time = new Date().getTime();
 
+            for (var roomID in data) {
+              if (data[roomID] === 'unknown' || data[roomID].name !== roomNames[roomID]) {
+                roomNames[roomID] = data[roomID].name === 'unknown' ? undefined : data[roomID].name;
+
+                for (var g in graphs) {
+                  var i = graphs[g].rooms.indexOf(roomID);
+                  if (i !== -1) graphs[g].graph.series[i].name = roomID + (roomNames[roomID] ? ' (' + roomNames[roomID] + ')' : '');
+                }
+              }
+            }
+
             for (var n in graphs) graphs[n].update(graphs[n], time, data);
           }).fail(function(a, b, c) {
             console.log(a, b, c);
           });
         }
 
-        function getRoomNames() {
-          $.get('https://cors-anywhere.herokuapp.com/https://raw.githubusercontent.com/opl-/towerattack-calc/master/names.json').done(function(data) {
-            roomNames = data;
-
-            for (var roomID in data) {
-              for (var n in graphs) {
-                if (graphs[n].rooms.indexOf(roomID) !== -1) {
-                  graphs[n].graph.series[graphs[n].rooms.indexOf(roomID)].name = roomNames[roomID] ? roomID + ' (' + roomNames[roomID] + ')' : roomID;
-                }
-              }
-            }
-          }).fail(function(a, b, c) {
-            console.log(a, b, c);
-          });
-        }
-
-        getRoomNames();
-
+        getData();
         setInterval(getData, 5000);
-        setInterval(getRoomNames, 30000);
       });
     </script>
   </head>
