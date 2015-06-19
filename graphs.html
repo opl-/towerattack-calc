@@ -182,14 +182,23 @@
           });
         }
 
+        var intervalID;
+
+        $('#i-updaterate').on('change', function() {
+          clearInterval(intervalID);
+          getData();
+          intervalID = setInterval(getData, $(this).val() * 1000);
+        });
+
         getData();
-        setInterval(getData, 5000);
+        intervalID = setInterval(getData, 5000);
       });
     </script>
   </head>
   <body>
     <h2>Room stats history</h2>
     <p>You can hide or show rooms by clicking on their labels on the bottom.<br/>Made by opl (<a href="https://twitter.com/oplopl0">Twitter</a>, <a href="https://reddit.com/u/opl_">Reddit</a>, <a href="https://steamcommunity.com/id/opl_">Steam</a>)</p>
+    <p>Update rate <select id="i-updaterate"><option value="5">5s</option><option value="10">10s</option><option value="15">15s</option><option value="30">30s</option><option value="60">1m</option><option value="300">5m</option><option value="900">15m</option></select></p>
     <div id="graphs"></div>
   </body>
 </html>
